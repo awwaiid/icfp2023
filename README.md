@@ -8,4 +8,5 @@ Create solutions with this structure:
 
 then we can submit best scores. We should make a script that submits the best ones?
 
-webhook test
+submission token: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1aWQiOiI2NGE4ODlkODhjNGVmY2E4Y2IwOWRjNzciLCJpYXQiOjE2ODg3NjY5MzYsImV4cCI6MTY5ODc2NjkzNn0.c-jX9nkHvFkgUpLTUxZyDw3GyiatxHx2sTS681Oxevw
+
