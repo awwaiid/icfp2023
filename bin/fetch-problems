@@ -2,5 +2,5 @@
 
 for i in {1..55} ; do
   echo "Fetching problem $i"
-  curl cdn.icfpcontest.com/problems/$i.json > problems/$i.json
+  curl cdn.icfpcontest.com/problems/$i.json > problems/problem-$i.json
 done
