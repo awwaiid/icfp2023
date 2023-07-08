@@ -32,12 +32,7 @@ struct Solution {
     placements: Vec<Position>
 }
 
-fn main() -> io::Result<()> {
-    let mut buffer = String::new();
-    io::stdin().read_to_string(&mut buffer)?;
-
-    let problem: Problem = serde_json::from_str(&buffer).expect("Failed to parse JSON");
-
+fn trivial(problem: Problem) -> Vec<Position> {
     let mut players: Vec<Position> = Vec::new();
 
     let stage_x_min = problem.stage_bottom_left[0];
@@ -58,6 +53,17 @@ fn main() -> io::Result<()> {
         }
         y = y + 10.0;
     }
+
+    players
+}
+
+fn main() -> io::Result<()> {
+    let mut buffer = String::new();
+    io::stdin().read_to_string(&mut buffer)?;
+
+    let problem: Problem = serde_json::from_str(&buffer).expect("Failed to parse JSON");
+
+    let players = trivial(problem);
 
     let solution = Solution {
         placements: players
