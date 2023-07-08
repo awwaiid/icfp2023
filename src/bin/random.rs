@@ -1,4 +1,7 @@
+use ncollide2d::na::{Isometry2, Point2, Vector2};
 use ncollide2d::pipeline::object::CollisionGroups;
+use ncollide2d::pipeline::GeometricQueryType;
+use ncollide2d::query::Ray;
 use ncollide2d::shape::{Ball, ShapeHandle};
 use ncollide2d::world::CollisionWorld;
 use serde::{Deserialize, Serialize};
@@ -66,7 +69,7 @@ fn trivial_solver(problem: &Problem) -> Vec<Position> {
     players
 }
 
-fn scorer(_problem: &Problem, _solution: &Solution) -> f64 {
+fn scorer(problem: Problem, solution: Solution) -> f64 {
     // {
     //   "room_width": 4200.0,
     //   "room_height": 6234.0,
@@ -83,71 +86,67 @@ fn scorer(_problem: &Problem, _solution: &Solution) -> f64 {
     //   ],
     //   "pillars": []}
 
-    fn build_collision_world() -> CollisionWorld<f64, BodyHandle> {
-        let mut world = CollisionWorld::new(0.02);
+    let mut world = CollisionWorld::new(0.02);
 
-        let rigid_body = RigidBodyDesc::new().build();
-        fn build_collision_world(musicians: &[i64]) -> CollisionWorld<f64, BodyHandle> {
-            let mut world = CollisionWorld::new(0.02);
+    // A ball / circle with a diameter of 10.0
+    let circle_shape = ShapeHandle::new(Ball::new(5.0));
 
-            // A ball / circle with a diameter of 10.0
-            let circle_shape = Ball::new(5.0);
+    let musicians_group = CollisionGroups::new().with_membership(&[0]);
+    let contacts_query = GeometricQueryType::Contacts(0.0, 0.0);
 
-            let musiciansGroup = CollisionGroups::new().with_membership(&[0]);
-
-            // Loop over musicans and add them to the world
-            for placement in solution.placements {
-                world.add(placement, circle_shape.clone(), musiciansGroup, 0, 0);
-            }
-
-            // Loop over pillars and add them to the world
-            for pillar in problem.pillars {
-                let rigid_body = RigidBodyDesc::new()
-                    .translation(Vector2::new(pillar.center[0], pillar.center[1]))
-                    .build();
-                let collider = ColliderDesc::new(ShapeHandle::new(Ball::new(pillar.radius)))
-                    .density(1.0)
-                    .collision_groups(CollisionGroups::new().with_membership(&[1]))
-                    .build(BodyHandle(world.add_rigid_body(rigid_body)));
-                world.add_collider(collider);
-            }
-
-            world
-        }
-
-        world
+    // Loop over musicans and add them to the world
+    for (i, player) in solution.placements.clone().iter().enumerate() {
+        world.add(
+            Isometry2::new(Vector2::new(player.x, player.y), 0.0),
+            circle_shape.clone(),
+            musicians_group,
+            contacts_query,
+            i,
+        );
     }
 
-    let mut world = build_collision_world();
+    let pillar_group = CollisionGroups::new().with_membership(&[1]);
+    // Loop over pillars and add them to the world
+    for pillar in problem.pillars {
+        let pillar_shape = ShapeHandle::new(Ball::new(pillar.radius));
+        world.add(
+            Isometry2::new(Vector2::new(pillar.center[0], pillar.center[1]), 0.0),
+            pillar_shape,
+            pillar_group,
+            contacts_query,
+            0,
+        );
+    }
 
     // loop over attendees and trace a line to each placement if it intersects a pillar, or another placement, then 0, otherwise take the distance of the line
     let mut score = 0.0;
 
     for attendee in problem.attendees {
         let mut min_distance = f64::MAX;
-        for placement in solution.placements {
+        for player in &solution.placements {
             let ray = Ray::new(
                 Point2::new(attendee.x, attendee.y),
-                Vector2::new(placement.x - attendee.x, placement.y - attendee.y),
+                Vector2::new(player.x - attendee.x, player.y - attendee.y),
             );
-            let mut interferences = Vec::new();
-            world.interferences_with_ray(&ray, &mut interferences);
-            for interference in interferences {
-                match interference {
-                    RayIntersection::Feature(id) => {
-                        if id == 1 {
-                            // pillar
-                            min_distance = 0.0;
-                        }
-                    }
-                    RayIntersection::Collider(id) => {
-                        if id == 0 {
-                            // placement
-                            min_distance = 0.0;
-                        }
-                    }
-                }
+
+            if world
+                .interferences_with_ray(&ray, 1.0_f64, &pillar_group)
+                .count()
+                > 0
+            {
+                min_distance = 0.0;
+                break;
             }
+
+            if world
+                .interferences_with_ray(&ray, 1.0_f64, &musicians_group)
+                .count()
+                > 1
+            {
+                min_distance = 0.0;
+                break;
+            }
+
             if min_distance != 0.0 {
                 min_distance = min_distance.min(ray.dir.norm());
             }
@@ -173,7 +172,7 @@ fn main() -> io::Result<()> {
     let output = serde_json::to_string(&solution).expect("Failed to generate JSON");
 
     eprintln!("");
-    eprintln!("Score: {}", scorer(&problem, &solution));
+    eprintln!("Score: {}", scorer(problem, solution));
     eprintln!("");
 
     io::stdout().write_all(output.as_bytes())?;
