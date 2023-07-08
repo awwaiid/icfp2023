@@ -2,20 +2,39 @@
 
 This year we didn't get much planning in ahead of time ... so going remote-async!
 
+## General idea
+
+We get a collection of problems and build out a collection of solutions. We submit them to get an overall score. This lends itself to trying to maximize the score for each problem using any algorithm or process available.
+
 Create solutions with this structure:
 
   solutions/solution-{problem number}-score-{score}-strategy-{ bot name }.json
 
-then we can submit best scores. We should make a script that submits the best ones?
+then we can submit best scores. We should make a script that submits the best ones? A script that gets and fills in the score? Scoring is async.
+
+## Submit
 
 submission token: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1aWQiOiI2NGE4ODlkODhjNGVmY2E4Y2IwOWRjNzciLCJpYXQiOjE2ODg3NjY5MzYsImV4cCI6MTY5ODc2NjkzNn0.c-jX9nkHvFkgUpLTUxZyDw3GyiatxHx2sTS681Oxevw
-
 
 To submit solutions you can set the above token to the environment variable API_KEY and run ./bin/submit_the_thing <list of solution files>
 The response will be the status code and, if successful, the submission id.
 
+## Things to run
 
-IDEAS:
+```sh
+bin/submit_the_thing solutions/solution-*trivial.json
+
+<problems/problem-1.json| bin/random
+
+diff -u <(jq . solution-7-score-unknown-strategy-random.json) <(jq . solution-7-score-unknown-strategy-trivial.json )
+
+time (for i in {1..55} ; do <problems/problem-$i.json| bin/random > solutions/solution-$i-score-unknown-strategy-random.json ; done)
+
+jq . solution-52-score-unknown-strategy-trivial.json
+```
+
+## IDEAS
+
 * optimization problem, so gotta get a good evaluator for sure and then ........ GA?!
 * manual with visualizer
 * some sort of spring model
