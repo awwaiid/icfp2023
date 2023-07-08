@@ -6,7 +6,7 @@
   "stage_bottom_left": [ 0.0, 0.0 ],
   "musicians": [ 0, 0 ],
   "attendees": [
-    { "x": 10.0, "y": 70.0, "tastes": [ 1 ] }
+    { "x": 10.0, "y": 60.0, "tastes": [ 1 ] }
   ],
   "pillars": []
 }

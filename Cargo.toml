@@ -7,6 +7,7 @@ edition = "2021"
 serde_json = "*"
 ncollide2d = "*"
 serde = { version = "*", features = ["derive"] }
+rapier2d = "*"
 
 [[bin]]
 name = "random"
