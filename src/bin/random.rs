@@ -24,15 +24,15 @@ struct Attendee {
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 struct Position {
     x: f64,
-    y: f64
+    y: f64,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 struct Solution {
-    placements: Vec<Position>
+    placements: Vec<Position>,
 }
 
-fn trivial(problem: Problem) -> Vec<Position> {
+fn trivial_solver(problem: &Problem) -> Vec<Position> {
     let mut players: Vec<Position> = Vec::new();
 
     let stage_x_min = problem.stage_bottom_left[0];
@@ -41,14 +41,16 @@ fn trivial(problem: Problem) -> Vec<Position> {
     let stage_y_max = stage_y_min + problem.stage_height;
 
     let mut y = stage_y_min + 10.0;
-    'iter:
-    while y < stage_y_max - 10.0 {
+    'iter: while y < stage_y_max - 10.0 {
         let mut x = stage_x_min + 10.0;
         while x < stage_x_max - 10.0 {
             if players.len() >= problem.musicians.len() {
                 break 'iter;
             }
-            players.push(Position { x: x as f64, y: y as f64 });
+            players.push(Position {
+                x: x as f64,
+                y: y as f64,
+            });
             x = x + 10.0;
         }
         y = y + 10.0;
@@ -63,10 +65,10 @@ fn main() -> io::Result<()> {
 
     let problem: Problem = serde_json::from_str(&buffer).expect("Failed to parse JSON");
 
-    let players = trivial(problem);
+    let players = trivial_solver(&problem);
 
     let solution = Solution {
-        placements: players
+        placements: players,
     };
 
     let output = serde_json::to_string(&solution).expect("Failed to generate JSON");
