@@ -1,0 +1,12 @@
+{
+  "room_width": 20.0,
+  "room_height": 100.0,
+  "stage_width": 20.0,
+  "stage_height": 50.0,
+  "stage_bottom_left": [ 0.0, 0.0 ],
+  "musicians": [ 0 ],
+  "attendees": [
+    { "x": 10.0, "y": 70.0, "tastes": [ 1 ] }
+  ],
+  "pillars": []
+}
