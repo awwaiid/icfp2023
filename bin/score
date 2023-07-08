@@ -1,3 +1,5 @@
 #!/bin/sh
 
 exec cargo run --bin score "$@"
+# exec ./target/release/score "$@"
+
