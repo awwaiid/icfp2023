@@ -1,0 +1,5 @@
+#!/bin/bash
+
+echo "Type checking trivial"
+tsc --noEmit src/trivial.ts
+
