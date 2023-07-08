@@ -1,3 +1,4 @@
 #!/bin/sh
 
 exec cargo run random
+# exec target/release/random
