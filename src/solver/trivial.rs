@@ -1,9 +1,6 @@
-use std::io::{self, Read, Write};
+use crate::icfp::*;
 
-use paisleys_paradox::icfp::*;
-use paisleys_paradox::scorer::*;
-
-fn trivial_solver(problem: &Problem) -> Vec<Position> {
+pub fn solve(problem: &Problem) -> Solution {
     let mut players: Vec<Position> = Vec::new();
 
     let stage_x_min = problem.stage_bottom_left[0];
@@ -27,28 +24,7 @@ fn trivial_solver(problem: &Problem) -> Vec<Position> {
         y = y + 10.0;
     }
 
-    players
-}
-
-fn main() -> io::Result<()> {
-    let mut buffer = String::new();
-    io::stdin().read_to_string(&mut buffer)?;
-
-    let problem: Problem = serde_json::from_str(&buffer).expect("Failed to parse JSON");
-
-    let players = trivial_solver(&problem);
-
-    let solution = Solution {
+    Solution {
         placements: players,
-    };
-
-    let output = serde_json::to_string(&solution).expect("Failed to generate JSON");
-
-    io::stdout().write_all(output.as_bytes())?;
-
-    eprintln!("");
-    eprintln!("Score: {}", scorer(problem, solution));
-    eprintln!("");
-
-    Ok(())
+    }
 }
