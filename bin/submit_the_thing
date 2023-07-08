@@ -1,0 +1,34 @@
+#!/usr/bin/python3
+
+import json
+import os
+import re
+import requests
+import sys
+import time
+
+submission_files = sys.argv
+API_KEY = os.environ.get('API_KEY', None)
+
+print(submission_files)
+# skipping the first entry which is the name of the script
+for file in submission_files[1:]:
+    pattern = 'solution-(\d+)-'
+    problem_id = re.search(pattern, file)
+    
+    if not problem_id:
+        raise Exception("Could not find problem id.")
+    else:
+        problem_id = problem_id.group(1)
+
+    print(f'Sending soution for problem {problem_id}')
+
+    with open(file, 'r') as submission:
+        data = submission.read().replace('\n', '')
+        payload = {"problem_id": int(problem_id), "contents": data}
+
+        r = requests.post('https://api.icfpcontest.com/submission', json=payload, headers={'Authorization': f'Bearer {API_KEY}'})
+
+        print(f'Response: {r.status_code} {r.content}')
+    
+    time.sleep(3)
