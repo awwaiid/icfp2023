@@ -59,6 +59,10 @@ fn trivial_solver(problem: &Problem) -> Vec<Position> {
     players
 }
 
+fn scorer(_problem: &Problem, _solution: &Solution) -> f64 {
+    0.0
+}
+
 fn main() -> io::Result<()> {
     let mut buffer = String::new();
     io::stdin().read_to_string(&mut buffer)?;
@@ -72,6 +76,10 @@ fn main() -> io::Result<()> {
     };
 
     let output = serde_json::to_string(&solution).expect("Failed to generate JSON");
+
+    eprintln!("");
+    eprintln!("Score: {}", scorer(&problem, &solution));
+    eprintln!("");
 
     io::stdout().write_all(output.as_bytes())?;
     Ok(())
