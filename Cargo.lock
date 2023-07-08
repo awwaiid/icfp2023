@@ -3,16 +3,6 @@
 version = 3
 
 [[package]]
-name = "ICFP-Contest"
-version = "0.1.0"
-dependencies = [
- "ncollide2d",
- "rapier2d",
- "serde",
- "serde_json",
-]
-
-[[package]]
 name = "approx"
 version = "0.5.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -318,6 +308,16 @@ name = "optional"
 version = "0.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "978aa494585d3ca4ad74929863093e87cac9790d81fe7aba2b3dc2890643a0fc"
+
+[[package]]
+name = "paisleys_paradox"
+version = "0.1.0"
+dependencies = [
+ "ncollide2d",
+ "rapier2d",
+ "serde",
+ "serde_json",
+]
 
 [[package]]
 name = "parry2d"
