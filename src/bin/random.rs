@@ -122,8 +122,7 @@ fn scorer(problem: Problem, solution: Solution) -> f64 {
     let mut score = 0.0;
 
     for attendee in problem.attendees {
-        let mut min_distance = f64::MAX;
-        for player in &solution.placements {
+        for (i, player) in solution.placements.clone().iter().enumerate() {
             let ray = Ray::new(
                 Point2::new(attendee.x, attendee.y),
                 Vector2::new(player.x - attendee.x, player.y - attendee.y),
@@ -134,7 +133,6 @@ fn scorer(problem: Problem, solution: Solution) -> f64 {
                 .count()
                 > 0
             {
-                min_distance = 0.0;
                 break;
             }
 
@@ -143,15 +141,24 @@ fn scorer(problem: Problem, solution: Solution) -> f64 {
                 .count()
                 > 1
             {
-                min_distance = 0.0;
                 break;
             }
 
-            if min_distance != 0.0 {
-                min_distance = min_distance.min(ray.dir.norm());
-            }
+            let distance = ray.dir.norm();
+
+            // eprint!("distance = {}\n", distance);
+
+            let player_instrument = problem.musicians[i];
+            // eprint!("player_instrument = {}\n", player_instrument);
+            let attendee_instrument_preference = attendee.tastes[player_instrument as usize];
+            // eprint!("attendee_instrument_preference = {}\n", attendee_instrument_preference);
+            let player_score =
+                ((attendee_instrument_preference * 1000000.0) / (distance * distance)).ceil();
+            // -5394855
+            // -7530993
+            // eprint!("player_score = {}\n", player_score);
+            score += player_score;
         }
-        score += min_distance;
     }
 
     score
@@ -171,10 +178,11 @@ fn main() -> io::Result<()> {
 
     let output = serde_json::to_string(&solution).expect("Failed to generate JSON");
 
+    io::stdout().write_all(output.as_bytes())?;
+
     eprintln!("");
     eprintln!("Score: {}", scorer(problem, solution));
     eprintln!("");
 
-    io::stdout().write_all(output.as_bytes())?;
     Ok(())
 }
