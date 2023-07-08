@@ -1,3 +1,4 @@
+use ncollide2d::world::CollisionWorld;
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use std::io::{self, Read, Write};
@@ -60,7 +61,56 @@ fn trivial_solver(problem: &Problem) -> Vec<Position> {
 }
 
 fn scorer(_problem: &Problem, _solution: &Solution) -> f64 {
-    0.0
+  // {
+  //   "room_width": 4200.0,
+  //   "room_height": 6234.0,
+  //   "stage_width": 198.0,
+  //   "stage_height": 909.0,
+  //   "stage_bottom_left": [
+  //     1076.0,
+  //     2395.0
+  //   ],
+  //   "musicians": [
+  //     0,
+  //     1,
+  //     2
+  //   ],
+  //   "pillars": []}
+
+  use nphysics2d::object::{BodyHandle, ColliderDesc, RigidBodyDesc};
+  use nphysics2d::world::{CollisionGroups, CollisionWorld};
+
+  fn build_collision_world() -> CollisionWorld<f64, BodyHandle> {
+    let mut world = CollisionWorld::new(0.02);
+
+    let rigid_body = RigidBodyDesc::new().build();
+fn build_collision_world(musicians: &[i64]) -> CollisionWorld<f64, BodyHandle> {
+  let mut world = CollisionWorld::new(0.02);
+
+  // A ball / circle with a diameter of 10.0
+  let circle_shape = ShapeHandle::new(Ball::new(5.0));
+
+  // Loop over musicans
+  for musician in musicians {
+    let rigid_body = RigidBodyDesc::new()
+      .translation(Vector2::new(0.0, 0.0))
+      .build();
+    let collider = ColliderDesc::new(circle_shape.clone())
+      .density(1.0)
+      .collision_groups(CollisionGroups::new().with_membership(&[0]))
+      .build(BodyHandle(world.add_rigid_body(rigid_body)));
+    world.add_collider(collider);
+  }
+
+  world
+}
+
+    world
+  }
+
+  let mut world = build_collision_world();
+
+
 }
 
 fn main() -> io::Result<()> {
