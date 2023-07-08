@@ -129,7 +129,7 @@ fn scorer(problem: Problem, solution: Solution) -> f64 {
             );
 
             if world
-                .interferences_with_ray(&ray, 1.0_f64, &pillar_group)
+                .interferences_with_ray(&ray, 5.0_f64, &pillar_group)
                 .count()
                 > 0
             {
@@ -137,7 +137,7 @@ fn scorer(problem: Problem, solution: Solution) -> f64 {
             }
 
             if world
-                .interferences_with_ray(&ray, 1.0_f64, &musicians_group)
+                .interferences_with_ray(&ray, 5.0_f64, &musicians_group)
                 .count()
                 > 1
             {
@@ -146,12 +146,15 @@ fn scorer(problem: Problem, solution: Solution) -> f64 {
 
             let distance = ray.dir.norm();
 
-            // eprint!("distance = {}\n", distance);
+            eprint!("distance = {}\n", distance);
 
             let player_instrument = problem.musicians[i];
-            // eprint!("player_instrument = {}\n", player_instrument);
+            eprint!("player_instrument = {}\n", player_instrument);
             let attendee_instrument_preference = attendee.tastes[player_instrument as usize];
-            // eprint!("attendee_instrument_preference = {}\n", attendee_instrument_preference);
+            eprint!(
+                "attendee_instrument_preference = {}\n",
+                attendee_instrument_preference
+            );
             let player_score =
                 ((attendee_instrument_preference * 1000000.0) / (distance * distance)).ceil();
             // -5394855
