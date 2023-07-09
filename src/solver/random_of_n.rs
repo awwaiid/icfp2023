@@ -1,7 +1,7 @@
-use std::collections::HashSet;
-use rand::Rng;
 use crate::icfp::*;
 use crate::scorer::*;
+use rand::Rng;
+use std::collections::HashSet;
 
 fn solve_once(problem: &Problem) -> Solution {
     let mut rng = rand::thread_rng();
@@ -22,12 +22,12 @@ fn solve_once(problem: &Problem) -> Solution {
         while !found_spot {
             let col = rng.gen_range(0..stage_cols);
             let row = rng.gen_range(0..stage_rows);
-            if !used_locations.contains(&(col,row)) {
-                used_locations.insert((col,row));
+            if !used_locations.contains(&(col, row)) {
+                used_locations.insert((col, row));
                 found_spot = true;
                 players.push(Position {
                     x: stage_x_min + (col as f32 * 10.0) + 10.0,
-                    y: stage_y_min + (row as f32 * 10.0) + 10.0
+                    y: stage_y_min + (row as f32 * 10.0) + 10.0,
                 });
             }
         }
@@ -56,4 +56,3 @@ pub fn solve(problem: &Problem) -> Solution {
     eprintln!("best score {}", best_score);
     best_solution
 }
-
