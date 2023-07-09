@@ -3,8 +3,8 @@ use rand::Rng;
 use crate::icfp::*;
 use crate::scorer::*;
 
-// #[derive(Debug, Clone)]
 // // , Serialize, Deserialize)]
+#[derive(Debug, Clone)]
 struct Individual {
     solution: Solution,
     score: f32
@@ -51,7 +51,44 @@ fn generate_random_individual(problem: &Problem) -> Individual {
     }
 }
 
+fn mutate_swap_placements(placements: Placements) -> Placements {
+    let mut placements = placements.clone();
+    let mut rng = rand::thread_rng();
+    let placement_1_n = rng.gen_range(0..placements.len());
+    let placement_1_v = placements[placement_1_n].clone();
+    let placement_2_n = rng.gen_range(0..placements.len());
+    let placement_2_v = placements[placement_2_n].clone();
+    placements[placement_1_n] = placement_2_v;
+    placements[placement_2_n] = placement_1_v;
+    placements
+}
+
 fn generate_offspring(problem: &Problem, individual_a: &Individual, individual_b: &Individual) -> Individual {
+
+    let mut rng = rand::thread_rng();
+
+    // Swap two placements
+    if rng.gen_ratio(10, 100) {
+        let placements = individual_a.solution.placements.clone();
+        let placements = mutate_swap_placements(placements.clone());
+        let solution = Solution { placements: placements };
+        let score = scorer(&problem, &solution);
+        return Individual { solution: solution, score: score };
+    }
+
+    if rng.gen_ratio(10, 100) {
+        return individual_a.clone();
+    }
+
+    if rng.gen_ratio(10, 100) {
+        if individual_a.score > individual_b.score {
+            return individual_a.clone();
+        } else {
+            return individual_b.clone();
+        }
+    }
+
+    // Generate an entirely new individual
     let mut random_individual = generate_random_individual(problem);
     let score = scorer(&problem, &random_individual.solution);
     random_individual.score = score;
@@ -71,7 +108,7 @@ pub fn solve(problem: &Problem) -> Solution {
     // Start with a sorted population
     population.sort_by(|b, a| a.score.partial_cmp(&b.score).unwrap());
 
-    for generation in 0..10 {
+    for generation in 0..100 {
         // Select top X
         population.truncate(20);
 
@@ -87,8 +124,9 @@ pub fn solve(problem: &Problem) -> Solution {
         population.sort_by(|b, a| a.score.partial_cmp(&b.score).unwrap());
 
         // Stats!
-        //
-        eprintln!("Best {}\tWorst {}", population[0].score, population.last().unwrap().score);
+        let sum: f32 = population.iter().map(|i| i.score).sum();
+        let avg = sum / population.len() as f32;
+        eprintln!("Gen {}\tBest {}\tWorst {}\tAvg {}", generation, population[0].score, population.last().unwrap().score, avg);
     }
 
     // Return the best of the best

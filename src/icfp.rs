@@ -31,7 +31,10 @@ pub struct Pillar {
     pub radius: f32,
 }
 
+pub type Placements = Vec<Position>;
+    // pub placements: Vec<Position>,
+
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Solution {
-    pub placements: Vec<Position>,
+    pub placements: Placements
 }
