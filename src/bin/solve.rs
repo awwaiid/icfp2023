@@ -23,7 +23,7 @@ fn main() -> io::Result<()> {
         "trivial" => paisleys_paradox::solver::trivial::solve(&problem),
         "random" => paisleys_paradox::solver::random::solve(&problem),
         "random-best" => paisleys_paradox::solver::random_of_n::solve(&problem),
-        "physics-of-n" => paisleys_paradox::solver::physics_of_n::solve(&problem),
+        "gravity-of-n" => paisleys_paradox::solver::gravity_of_n::solve(&problem),
         _ => panic!("Invalid solver"),
     };
 
