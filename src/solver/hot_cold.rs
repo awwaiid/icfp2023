@@ -11,7 +11,7 @@ fn solve_once(problem: &Problem) -> Solution {
     // let mut qp = QueryPipeline::new();
 
     /* Create other structures necessary for the simulation. */
-    let gravity = vector![10.0, 10.0];
+    let gravity = vector![1.0, 0.0];
     let integration_parameters = IntegrationParameters::default();
     let mut physics_pipeline = PhysicsPipeline::new();
     let mut island_manager = IslandManager::new();
@@ -49,6 +49,12 @@ fn solve_once(problem: &Problem) -> Solution {
         let mut new_solution = Solution {
             placements: Vec::new(),
         };
+
+        // At each step perturb the positions of the players looking for a vector that improves the players score the most
+
+        // We need a
+        // player scorer.
+        // apply a force to each player in the direction of the best score.
 
         for player in &players {
             let body = rigid_body_set.get(*player).unwrap();
@@ -149,7 +155,7 @@ fn setup_bodies(
 }
 
 pub fn solve(problem: &Problem) -> Solution {
-    let n = 100;
+    let n = 10;
     let mut best_score = 0.0;
     let mut best_solution = Solution { placements: vec![] };
     for attempt in 0..n {

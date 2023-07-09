@@ -16,7 +16,7 @@ pub(crate) fn add_musician_to_physics(
         .build();
 
     let musician_body_handle: RigidBodyHandle = rigid_body_set.insert(musician_body);
-    let musician_collider = ColliderBuilder::ball(radius).restitution(0.0).build();
+    let musician_collider = ColliderBuilder::ball(radius).restitution(0.7).build();
 
     collider_set.insert_with_parent(musician_collider, musician_body_handle, rigid_body_set);
 
@@ -132,6 +132,20 @@ pub fn scorer(problem: &Problem, solution: &Solution) -> f32 {
                 // eprint!("player_score = {}\n", player_score);
                 score += player_score;
             }
+        }
+    }
+
+    let player_physical_presence = 10.0;
+
+    // validate that all players are on the stage with the stage_bottom_left and stage_width/height
+    for player in &solution.placements {
+        if player.x < problem.stage_bottom_left[0] + player_physical_presence
+            || player.x > problem.stage_bottom_left[0] + problem.stage_width - player_physical_presence
+            || player.y < problem.stage_bottom_left[1] + player_physical_presence
+            || player.y > problem.stage_bottom_left[1] + problem.stage_height - player_physical_presence
+        {
+            // eprintln!("Player is off the stage!");
+            score = 0.0;
         }
     }
 
