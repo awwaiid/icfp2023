@@ -2,16 +2,31 @@ use crate::icfp::*;
 use crate::scorer::*;
 use rapier2d::prelude::*;
 
+use std::fs;
+
+// fn get_problem_by_id(id: &str) -> Problem {
+//     let buffer = fs::read_to_string(&format!("problems/problem-{}.json", id)).unwrap();
+//     let problem: Problem = serde_json::from_str(&buffer).expect("Failed to parse JSON");
+//     problem
+// }
+
+fn get_solution_by_path(path: &str) -> Solution {
+    let buffer = fs::read_to_string(path).unwrap();
+    let solution: Solution = serde_json::from_str(&buffer).expect("Failed to parse JSON");
+    solution
+}
+
 fn solve_once(problem: &Problem) -> Solution {
-    let random_start = crate::solver::random::solve(&problem);
+    // let random_start = crate::solver::random::solve(&problem);
+    let random_start =
+        get_solution_by_path("solutions/solution-55-score-622233-strategy-best-of-n.json");
 
     let (mut rigid_body_set, mut collider_set, players) = setup_bodies(&random_start, &problem);
 
-    // Set up the query
-    // let mut qp = QueryPipeline::new();
+    let physics_limit = 500;
 
     /* Create other structures necessary for the simulation. */
-    let gravity = vector![10.0, 0.0];
+    let gravity = vector![0.0, 0.0];
     let integration_parameters = IntegrationParameters::default();
     let mut physics_pipeline = PhysicsPipeline::new();
     let mut island_manager = IslandManager::new();
@@ -27,7 +42,7 @@ fn solve_once(problem: &Problem) -> Solution {
     let mut best_score = scorer(&problem, &best_solution);
 
     /* Run the game loop, stepping the simulation once per frame. */
-    for i in 0..20000 {
+    for i in 0..physics_limit {
         physics_pipeline.step(
             &gravity,
             &integration_parameters,
