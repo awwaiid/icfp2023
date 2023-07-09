@@ -2,19 +2,25 @@ use rapier2d::prelude::*;
 // mod icfp;
 use crate::icfp::*;
 
-fn add_musician_to_physics(
+pub(crate) fn add_musician_to_physics(
     rigid_body_set: &mut RigidBodySet,
     collider_set: &mut ColliderSet,
     x: f32,
     y: f32,
     radius: f32,
-) {
-    let musician_body = RigidBodyBuilder::fixed() // or ::dynamic()
+    index: u128,
+) -> RigidBodyHandle {
+    let musician_body = RigidBodyBuilder::dynamic() // or ::dynamic()
         .translation(vector![x, y]) // Initial location
+        .user_data(index)
         .build();
-    let musician_body_handle = rigid_body_set.insert(musician_body);
+
+    let musician_body_handle: RigidBodyHandle = rigid_body_set.insert(musician_body);
     let musician_collider = ColliderBuilder::ball(radius).restitution(0.0).build();
+
     collider_set.insert_with_parent(musician_collider, musician_body_handle, rigid_body_set);
+
+    musician_body_handle
 }
 
 pub fn scorer(problem: &Problem, solution: &Solution) -> f32 {
@@ -45,6 +51,7 @@ pub fn scorer(problem: &Problem, solution: &Solution) -> f32 {
             player.x,
             player.y,
             5.0,
+            0,
         );
     }
 
@@ -56,6 +63,7 @@ pub fn scorer(problem: &Problem, solution: &Solution) -> f32 {
             pillar.center[0],
             pillar.center[1],
             pillar.radius,
+            0,
         );
     }
 

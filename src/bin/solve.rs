@@ -14,7 +14,7 @@ fn main() -> io::Result<()> {
     let solver = args.get(1);
     let solver = match solver {
         Some(name) => name.as_str(),
-        None => "trivial"
+        None => "trivial",
     };
 
     eprintln!("Solving problem with {}", solver);
@@ -23,7 +23,8 @@ fn main() -> io::Result<()> {
         "trivial" => paisleys_paradox::solver::trivial::solve(&problem),
         "random" => paisleys_paradox::solver::random::solve(&problem),
         "random-best" => paisleys_paradox::solver::random_of_n::solve(&problem),
-        _ => panic!("Invalid solver")
+        "physics-of-n" => paisleys_paradox::solver::physics_of_n::solve(&problem),
+        _ => panic!("Invalid solver"),
     };
 
     let output = serde_json::to_string(&solution).expect("Failed to generate JSON");

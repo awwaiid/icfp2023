@@ -44,7 +44,7 @@ pub fn solve(problem: &Problem) -> Solution {
     let mut best_solution = Solution { placements: vec![] };
     for attempt in 0..n {
         eprint!("Attempt {}... ", attempt);
-        let solution = solve_once(problem);
+        let solution = solve_once(&problem);
         let score = scorer(&problem, &solution);
         eprintln!("score {}", score);
         if score > best_score {
