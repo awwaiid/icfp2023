@@ -11,7 +11,7 @@ fn solve_once(problem: &Problem) -> Solution {
     // let mut qp = QueryPipeline::new();
 
     /* Create other structures necessary for the simulation. */
-    let gravity = vector![1.0, 0.0];
+    let gravity = vector![10.0, 0.0];
     let integration_parameters = IntegrationParameters::default();
     let mut physics_pipeline = PhysicsPipeline::new();
     let mut island_manager = IslandManager::new();
@@ -56,13 +56,43 @@ fn solve_once(problem: &Problem) -> Solution {
         // player scorer.
         // apply a force to each player in the direction of the best score.
 
-        for player in &players {
-            let body = rigid_body_set.get(*player).unwrap();
+        for (i, player) in players.iter().enumerate() {
+            let body: &mut RigidBody = rigid_body_set.get_mut(*player).unwrap();
             let pos = body.position().translation.vector;
+            let new_player_placement = Position { x: pos.x, y: pos.y };
+            new_solution.placements.push(new_player_placement);
 
-            new_solution
-                .placements
-                .push(Position { x: pos.x, y: pos.y });
+            let ps = player_scorer(&problem, &new_solution, &new_player_placement, i);
+
+            // FIXME
+            // loop over 360 degrees in 10 degree increments
+            // for each angle, apply a force in that direction
+            // measure the score
+            // if the score is better, keep the force
+            // if the score is worse, try the next angle
+            // if the score is the same, try the next angle
+            // if we've tried all angles, keep the best force
+
+            let mut best_score = ps;
+            let mut force = vector![0.0, 0.0];
+
+            for angle in 0..360 {
+                let angle_radians = angle as f32 * std::f32::consts::PI / 180.0;
+                force = vector![angle_radians.cos(), angle_radians.sin()];
+
+                // compute the new position of the player outside of the physics engine
+                let new_player_placement = Position {
+                    x: new_player_placement.x + force.x,
+                    y: new_player_placement.y + force.y,
+                };
+
+                let new_ps = player_scorer(&problem, &new_solution, &new_player_placement, i);
+                if new_ps > best_score {
+                    best_score = new_ps;
+                }
+            }
+
+            body.add_force(force, true);
         }
 
         let score = scorer(&problem, &new_solution);
@@ -155,7 +185,7 @@ fn setup_bodies(
 }
 
 pub fn solve(problem: &Problem) -> Solution {
-    let n = 10;
+    let n = 1;
     let mut best_score = 0.0;
     let mut best_solution = Solution { placements: vec![] };
     for attempt in 0..n {

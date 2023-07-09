@@ -19,7 +19,7 @@ pub struct Attendee {
     pub tastes: Vec<f32>,
 }
 
-#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize, Copy)]
 pub struct Position {
     pub x: f32,
     pub y: f32,

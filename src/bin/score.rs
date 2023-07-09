@@ -1,6 +1,6 @@
 use std::env;
 use std::fs;
-use std::io::{self, Read, Write};
+use std::io::{self};
 
 use paisleys_paradox::icfp::*;
 use paisleys_paradox::scorer::*;
