@@ -9,7 +9,8 @@ ncollide2d = "*"
 serde = { version = "*", features = ["derive"] }
 rapier2d = "*"
 rand = "*"
-
+bevy = { version = "*" }
+bevy_rapier2d = { version = "*", features = ["debug-render-2d"] }
 [[bin]]
 name = "solve"
 
