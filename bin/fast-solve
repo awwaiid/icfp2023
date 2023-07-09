@@ -1,0 +1,4 @@
+#!/bin/sh
+
+cargo build --release >/dev/null
+exec target/release/solve "$@"
