@@ -25,6 +25,7 @@ fn main() -> io::Result<()> {
         "random-best" => paisleys_paradox::solver::random_of_n::solve(&problem),
         "gravity-of-n" => paisleys_paradox::solver::gravity_of_n::solve(&problem),
         "hot-cold" => paisleys_paradox::solver::hot_cold::solve(&problem),
+        "ga" => paisleys_paradox::solver::ga::solve(&problem),
         _ => panic!("Invalid solver"),
     };
 

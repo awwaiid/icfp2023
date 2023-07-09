@@ -1,6 +1,7 @@
 pub mod icfp;
 pub mod scorer;
 pub mod solver {
+    pub mod ga;
     pub mod gravity_of_n;
     pub mod hot_cold;
     pub mod random;
