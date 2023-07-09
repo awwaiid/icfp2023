@@ -27,7 +27,7 @@ fn solve_once(problem: &Problem) -> Solution {
     let mut best_score = scorer(&problem, &best_solution);
 
     /* Run the game loop, stepping the simulation once per frame. */
-    for _ in 0..200 {
+    for i in 0..20000 {
         physics_pipeline.step(
             &gravity,
             &integration_parameters,
@@ -79,7 +79,7 @@ fn solve_once(problem: &Problem) -> Solution {
             for angle in 0..360 {
                 let angle_radians = angle as f32 * std::f32::consts::PI / 180.0;
                 force = vector![angle_radians.cos(), angle_radians.sin()];
-
+                // eprintln!("force {}", force);
                 // compute the new position of the player outside of the physics engine
                 let new_player_placement = Position {
                     x: new_player_placement.x + force.x,
@@ -95,8 +95,10 @@ fn solve_once(problem: &Problem) -> Solution {
             body.add_force(force, true);
         }
 
-        let score = scorer(&problem, &new_solution);
+        // Computing step
 
+        let score = scorer(&problem, &new_solution);
+        eprintln!("step: {} : {} ", i, score);
         if score > best_score {
             // eprintln!("  NEW WINNER");
             best_score = score;
