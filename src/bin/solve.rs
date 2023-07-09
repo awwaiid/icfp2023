@@ -2,7 +2,7 @@ use std::env;
 use std::io::{self, Read, Write};
 
 use paisleys_paradox::icfp::*;
-use paisleys_paradox::scorer::*;
+// use paisleys_paradox::scorer::*;
 
 fn main() -> io::Result<()> {
     let mut buffer = String::new();
@@ -21,16 +21,18 @@ fn main() -> io::Result<()> {
 
     let solution = match solver {
         "trivial" => paisleys_paradox::solver::trivial::solve(&problem),
-        _ => panic!("I should never get here!!!!")
+        "random" => paisleys_paradox::solver::random::solve(&problem),
+        "random-best" => paisleys_paradox::solver::random_of_n::solve(&problem),
+        _ => panic!("Invalid solver")
     };
 
     let output = serde_json::to_string(&solution).expect("Failed to generate JSON");
 
     io::stdout().write_all(output.as_bytes())?;
 
-    eprintln!("");
-    eprintln!("Score: {}", scorer(problem, solution));
-    eprintln!("");
+    // eprintln!("");
+    // eprintln!("Score: {}", scorer(problem, solution));
+    // eprintln!("");
 
     Ok(())
 }

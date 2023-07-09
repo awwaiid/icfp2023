@@ -8,6 +8,7 @@ serde_json = "*"
 ncollide2d = "*"
 serde = { version = "*", features = ["derive"] }
 rapier2d = "*"
+rand = "*"
 
 [[bin]]
 name = "solve"

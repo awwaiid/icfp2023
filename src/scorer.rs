@@ -17,7 +17,7 @@ fn add_musician_to_physics(
     collider_set.insert_with_parent(musician_collider, musician_body_handle, rigid_body_set);
 }
 
-pub fn scorer(problem: Problem, solution: Solution) -> f32 {
+pub fn scorer(problem: &Problem, solution: &Solution) -> f32 {
     // {
     //   "room_width": 4200.0,
     //   "room_height": 6234.0,
@@ -49,7 +49,7 @@ pub fn scorer(problem: Problem, solution: Solution) -> f32 {
     }
 
     // Loop over pillars and add them to the world
-    for pillar in problem.pillars {
+    for pillar in &problem.pillars {
         add_musician_to_physics(
             &mut rigid_body_set,
             &mut collider_set,
@@ -66,7 +66,7 @@ pub fn scorer(problem: Problem, solution: Solution) -> f32 {
     // loop over attendees and trace a line to each placement if it intersects a pillar, or another placement, then 0, otherwise take the distance of the line
     let mut score = 0.0;
 
-    for attendee in problem.attendees {
+    for attendee in &problem.attendees {
         // eprintln!("Working on attendee");
         for (i, player) in solution.placements.clone().iter().enumerate() {
             // eprintln!("Working on musician {} at ({},{})", i, player.x, player.y);
@@ -121,7 +121,7 @@ pub fn scorer(problem: Problem, solution: Solution) -> f32 {
                     ((attendee_instrument_preference * 1000000.0) / (distance * distance)).ceil();
                 // -5394855
                 // -7530993
-                eprint!("player_score = {}\n", player_score);
+                // eprint!("player_score = {}\n", player_score);
                 score += player_score;
             }
         }
