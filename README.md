@@ -33,6 +33,16 @@ time (for i in {1..90} ; do <problems/problem-$i.json| bin/solve > solutions/sol
 jq . solution-52-score-unknown-strategy-trivial.json
 ```
 
+## TECHNOLOGY
+
+This year we used:
+* Rust
+* ChatGPT
+* TypeScript
+* Bash
+* Discord
+* Git :)
+
 ## IDEAS
 
 - optimization problem, so gotta get a good evaluator for sure and then ........ GA?!

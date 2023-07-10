@@ -251,5 +251,9 @@ pub fn scorer(problem: &Problem, solution: &Solution) -> f32 {
         }
     }
 
+    // validate that players don't get within 10 of each other
+    // and add in however we do the peer-proximity
+    // and add in however we do the volume
+
     score
 }
